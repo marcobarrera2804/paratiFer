@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Te Amo</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(270deg, #ff7e5f, #feb47b, #ff6f61, #ff4e50);
+            background-size: 400% 400%;
+            animation: GradientBackground 10s ease infinite;
+            font-family: Arial, sans-serif;
+            color: white;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        @keyframes GradientBackground {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        h1 {
+            font-size: 2.5em;
+            text-shadow: 0 0 10px #ff7e5f, 0 0 20px #ff7e5f, 0 0 30px #ff7e5f;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        p {
+            font-size: 1.2em;
+            text-align: center;
+            max-width: 600px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 5px #feb47b, 0 0 10px #feb47b;
+        }
+
+        button {
+            margin-bottom: 20px;
+            padding: 15px 30px;
+            font-size: 1em;
+            cursor: pointer;
+            background-color: #ff6f61;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 0 10px #ff6f61, 0 0 20px #ff6f61;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #ff4e50;
+            box-shadow: 0 0 10px #ff4e50, 0 0 20px #ff4e50;
+        }
+
+        canvas {
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5), 0 0 40px rgba(255, 255, 255, 0.5);
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Estilos para dispositivos móviles */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            p {
+                font-size: 1em;
+                max-width: 90%;
+            }
+
+            button {
+                padding: 10px 20px;
+                font-size: 0.9em;
+            }
+
+            canvas {
+                width: 90%;
+                height: auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5em;
+            }
+
+            p {
+                font-size: 0.9em;
+            }
+
+            button {
+                padding: 8px 16px;
+                font-size: 0.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+<p>
+   ERES EL AMOR DE MI VIDA
+</p>
+<button id="drawButton">Dibujar Sorpresa</button>
+<canvas id="sunflowerCanvas" width="600" height="600"></canvas>
+
+<script>
+    const canvas = document.getElementById('sunflowerCanvas');
+    const ctx = canvas.getContext('2d');
+    let drawing = false; // Para controlar si el dibujo está en proceso
+
+    function drawPetal(x, y, radiusX, radiusY, rotation, color, delay) {
+        setTimeout(() => {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 0.5; // Líneas muy finas
+            ctx.beginPath();
+            ctx.ellipse(x, y, radiusX, radiusY, rotation, 0, Math.PI * 2);
+            ctx.stroke();
+        }, delay);
+    }
+
+    function drawCircle(x, y, radius, color, delay) {
+        setTimeout(() => {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 0.5; // Líneas finas
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.stroke();
+        }, delay);
+    }
+
+    // Función para dibujar el tallo del girasol
+    function drawStem(centerX, centerY, length, delay) {
+        setTimeout(() => {
+            ctx.strokeStyle = 'darkgreen';
+            ctx.lineWidth = 2; // Un poco más grueso para el tallo
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY + 40); // Inicia desde el centro del girasol (debajo)
+            ctx.lineTo(centerX, centerY + 40 + length); // Largo del tallo
+            ctx.stroke();
+        }, delay);
+    }
+
+    function drawSunflower(centerX, centerY, delayOffset) {
+        const petalColor = 'gold';
+        const centerColor = 'saddlebrown';
+
+        // Dibuja los pétalos
+        for (let i = 0; i < 16; i++) {
+            for (let j = 0; j < 18; j++) {
+                const angle = (i * Math.PI * 2) / 16;
+                const petalRadius = 50 - j * 3;
+                const petalX = centerX + Math.cos(angle) * 40;
+                const petalY = centerY + Math.sin(angle) * 40;
+
+                drawPetal(petalX, petalY, petalRadius, petalRadius / 2, angle, petalColor, delayOffset + i * 100 + j * 20);
+            }
+        }
+
+        // Dibuja la parte central (semillas)
+        const phi = 137.508 * (Math.PI / 180);
+        for (let i = 0; i < 150; i++) {
+            const r = 2 * Math.sqrt(i);
+            const theta = i * phi;
+            const x = centerX + r * Math.cos(theta);
+            const y = centerY + r * Math.sin(theta);
+
+            drawCircle(x, y, 2, centerColor, delayOffset + 1600 + i * 10);
+        }
+
+        // Dibuja el tallo después de dibujar el girasol
+        drawStem(centerX, centerY, 100, delayOffset + 2500);
+    }
+
+    function drawBouquet() {
+        if (drawing) return; // Evitar que se dibuje mientras ya está en proceso
+        drawing = true;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpia el lienzo
+
+        // Dibuja tres girasoles con sus tallos
+        drawSunflower(200, 200, 0);     // Girasol 1
+        drawSunflower(400, 200, 2000);  // Girasol 2
+        drawSunflower(300, 400, 4000);  // Girasol 3
+    }
+
+    document.getElementById('drawButton').addEventListener('click', drawBouquet);
+</script>
+
+</body>
+</html>
